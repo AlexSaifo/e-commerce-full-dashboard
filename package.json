@@ -4,6 +4,9 @@
   "author": "Alex_Saifo",
   "private": true,
   "dependencies": {
+    "@mui/material": "^5.11.16",
+    "@mui/styled-engine-sc": "^5.11.11",
+    "@reduxjs/toolkit": "^1.9.3",
     "@syncfusion/ej2": "^19.4.48",
     "@syncfusion/ej2-react-calendars": "^19.4.48",
     "@syncfusion/ej2-react-charts": "^19.4.50",
@@ -14,11 +17,18 @@
     "@syncfusion/ej2-react-popups": "^19.4.52",
     "@syncfusion/ej2-react-richtexteditor": "^19.4.50",
     "@syncfusion/ej2-react-schedule": "^19.4.50",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "axios": "^1.3.4",
+    "framer-motion": "^10.12.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-icons": "^4.3.1",
-    "react-router-dom": "^6.2.1",
-    "react-scripts": "5.0.0"
+    "react-redux": "^8.0.5",
+    "react-router-dom": "^6.10.0",
+    "react-scripts": "5.0.0",
+    "react-slick": "^0.29.0",
+    "react-spinners": "^0.13.8",
+    "slick-carousel": "^1.8.1",
+    "styled-components": "^5.3.9"
   },
   "scripts": {
     "start": "react-scripts start",
