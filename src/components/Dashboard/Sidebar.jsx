@@ -5,7 +5,6 @@ import { MdOutlineCancel } from "react-icons/md";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 
 import { links } from "../../data/dummy";
-import { randomId } from "@syncfusion/ej2/diagrams";
 
 
 import {setActiveMenu} from '../../app/uiSlice'

@@ -1,23 +1,27 @@
 import React from "react";
-import ReactDOM from "react-dom";
 import App from "./App";
-import { Provider } from "react-redux";
-
 import "./index.css";
 
+import { createRoot } from "react-dom/client";
+
+import { Provider } from "react-redux";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
+
 import store from "./app/store";
-import { fetchOrders } from "./app/ordersSlice";
-import { fetchEmployees } from "./app/employeesSlice";
-import { fetchCustomers } from "./app/customersSlice";
 
-store.dispatch(fetchOrders());
-store.dispatch(fetchEmployees());
-store.dispatch(fetchCustomers());
+import { fetchReports } from "./app/reportsSlice";
+import { fetchMode } from "./app/uiSlice";
 
+store.dispatch(fetchReports());
+store.dispatch(fetchMode());
 
-ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById("root")
+const container = document.getElementById("root");
+const root = createRoot(container);
+root.render(
+    <GoogleOAuthProvider clientId="955168227955-bc2e730kg6pf41po9lm3rrnll2l2f0dh.apps.googleusercontent.com">
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </GoogleOAuthProvider>
 );

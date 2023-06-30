@@ -41,7 +41,7 @@ const Navbar = () => {
     handelResize();
 
     return () => window.removeEventListener("resize", handelResize);
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     if (screenSize <= 900) {
@@ -49,7 +49,7 @@ const Navbar = () => {
     } else {
       dispatch(setActiveMenu(true));
     }
-  }, [screenSize, setActiveMenu, dispatch]);
+  }, [screenSize, dispatch]);
 
   return (
     <div className="flex justify-between p-2 md:mx-6 relative ">
@@ -102,7 +102,7 @@ const Navbar = () => {
               dispatch(handelClick("userProfile"));
             }}
           >
-            <img src={avatar} className="rounded-full w-8 h-8 " />
+            <img src={avatar} alt='avatar' className="rounded-full w-8 h-8 " />
             <p>
               <span className="text-gray-400 text-14">Hi, </span>{" "}
               <span className="text-gray-400 font-bold ml-1 text-14">

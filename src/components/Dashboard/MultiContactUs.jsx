@@ -12,37 +12,29 @@ import {
   Sort,
   Filter,
   Selection,
-  ContextMenu,
-  Resize,
 } from "@syncfusion/ej2-react-grids";
-import { customersGrid } from "../../data/dummy";
-import { Header } from "../../components/Dashboard";
+import { contactUsGrid } from "../../data/dummy";
 import { useSelector } from "react-redux";
 import {
-  selectAllCustomers,
-  removeCustomer,
-  removeCustomers,
-  fetchCustomers,
-} from "../../app/customersSlice";
+  fetchContactUs,
+  removeContactUs,
+  removeMultiContactUs,
+  selectAllContactUs,
+} from "../../app/contactUsSlice";
 import {
   selectAlertButtonText,
   selectAlertMessage,
   selectAlertType,
 } from "../../app/alertSlice";
 import Alert from "../../components/Dashboard/UI/Alert";
-import DataSpinner from "../../components/DataSpinner";
-import store from "../../app/store";
 import { BiShow } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
-const Customers = () => {
-  const customersData = useSelector(selectAllCustomers);
+import store from "../../app/store";
+import DataSpinner from "../DataSpinner";
+
+const MultiContactUs = () => {
+  const { dispatch } = store;
   const navigate = useNavigate();
-  const showSpinner = customersData.length === 0;
-
-  const alertAddMessage = useSelector(selectAlertMessage);
-  const alertType = useSelector(selectAlertType);
-  const alertButtonText = useSelector(selectAlertButtonText);
-
   let gridRef = useRef(null);
 
   const ShowButton = () => (
@@ -52,19 +44,35 @@ const Customers = () => {
     </button>
   );
 
+  const contactUsData = useSelector(selectAllContactUs);
+  const showSpinner = contactUsData.length === 0;
+  const toolbar = [
+    "PdfExport",
+    "Search",
+    "Delete",
+    { id: "Show", template: ShowButton },
+  ];
+
+  const alertAddMessage = useSelector(selectAlertMessage);
+  const alertType = useSelector(selectAlertType);
+  const alertButtonText = useSelector(selectAlertButtonText);
+
   const handleToolbarClick = (args) => {
     if (gridRef.current && args.item.id.includes("pdfexport")) {
-      gridRef.current.pdfExport();
+      const selectedRecords = gridRef.current.getSelectedRecords();
+      if (selectedRecords[0]) gridRef.current.pdfExport();
     } else if (args.item.id === "grid_delete") {
       const selectedRecords = gridRef.current.getSelectedRecords();
+
       if (selectedRecords[0]) {
+        console.log(selectedRecords);
         if (selectedRecords.length === 1) {
           selectedRecords.forEach((record) =>
-            store.dispatch(removeCustomer(record.CustomerID))
+            dispatch(removeContactUs(record.ID))
           );
         } else {
-          const ids = selectedRecords.map((record) => record.CustomerID);
-          store.dispatch(removeCustomers(ids));
+          const ids = selectedRecords.map((record) => record.ID);
+          dispatch(removeMultiContactUs(ids));
         }
       }
     } else if (
@@ -73,18 +81,11 @@ const Customers = () => {
     ) {
       const item = gridRef.current.getSelectedRecords();
       if (item[0]) {
-        const id = item[0].CustomerID;
-        navigate(`/dashboard/customers/${id}`);
+        const id = item[0].ID;
+        navigate(`/dashboard/contact-us/${id}`);
       }
     }
   };
-
-  const toolbar = [
-    "PdfExport",
-    "Search",
-    "Delete",
-    { id: "Show", template: ShowButton },
-  ];
 
   const onCloseAlertRemoveHandler = () => {
     if (alertType === "info" || alertType === "pending") {
@@ -95,8 +96,7 @@ const Customers = () => {
   };
 
   return (
-    <div className="m-2 md:m-10 p-2 md:p-10 bg-white rounded-3xl dark:bg-secondary-dark-bg">
-      <Header category="Page" title="Customers" />
+    <>
       <DataSpinner showSpinner={showSpinner} />
       {!showSpinner && (
         <>
@@ -110,7 +110,7 @@ const Customers = () => {
           )}
           <GridComponent
             id="grid"
-            dataSource={customersData}
+            dataSource={contactUsData}
             toolbar={toolbar}
             allowPdfExport
             toolbarClick={handleToolbarClick}
@@ -118,12 +118,11 @@ const Customers = () => {
             allowPaging
             allowSorting
             allowSelection
-            allowFiltering
             editSettings={{ allowDeleting: true }}
             width="auto"
           >
             <ColumnsDirective>
-              {customersGrid.map((item, idx) => (
+              {contactUsGrid.map((item, idx) => (
                 <ColumnDirective key={idx} {...item} />
               ))}
             </ColumnsDirective>
@@ -137,23 +136,21 @@ const Customers = () => {
                 Sort,
                 Filter,
                 PdfExport,
-                ContextMenu,
-                Resize,
               ]}
             />
           </GridComponent>
         </>
       )}
-    </div>
+    </>
   );
 };
 
-export default Customers;
+export default MultiContactUs;
 
-export const customersLoader = async () => {
+export const contactLoader = async () => {
   try {
     setTimeout(() => {
-      store.dispatch(fetchCustomers());
+      store.dispatch(fetchContactUs());
     }, 1500);
     return true;
   } catch (error) {

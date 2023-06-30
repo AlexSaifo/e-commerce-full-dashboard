@@ -47,14 +47,16 @@ const Navbar = () => {
               {label}
             </Link>
           ))}
-          <motion.button
-            variants={buttonVariants}
-            whileHover="hover"
-            whileTap="tap"
-            className="hover:bg-gray-800 py-2 px-4 rounded-md bg-blue-600 ml-4"
-          >
-            Login
-          </motion.button>
+          <Link to={"auth"}>
+            <motion.button
+              variants={buttonVariants}
+              whileHover="hover"
+              whileTap="tap"
+              className="hover:bg-gray-800 py-2 px-4 rounded-md bg-blue-600 ml-4"
+            >
+              Login
+            </motion.button>
+          </Link>
         </div>
 
         <div className="block md:hidden">
@@ -84,14 +86,16 @@ const Navbar = () => {
                 {label}
               </Link>
             ))}
-            <motion.button
-              variants={buttonVariants}
-              whileHover="hover"
-              whileTap="tap"
-              className="block hover:bg-gray-800 py-2 px-4 rounded-md bg-blue-600 ml-4"
-            >
-              Login
-            </motion.button>
+            <Link to={"auth"}>
+              <motion.button
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+                className="block hover:bg-gray-800 py-2 px-4 rounded-md bg-blue-600 ml-4"
+              >
+                Login
+              </motion.button>
+            </Link>
           </motion.div>
         )}
       </AnimatePresence>

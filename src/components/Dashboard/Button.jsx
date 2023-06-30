@@ -1,7 +1,5 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 
-import { handelClick } from "../../app/uiSlice";
 
 const Button = ({
   icon,
@@ -14,9 +12,9 @@ const Button = ({
   width,
   customFunc,
   className,
-  isValid
+  isValid,
+  children
 }) => {
-  const dispatch = useDispatch();
 
   return (
     <button
@@ -24,15 +22,13 @@ const Button = ({
       onClick={() => {
         if (customFunc) {
           customFunc();
-        } else {
-          dispatch(handelClick());
         }
       }}
       style={{ backgroundColor: bgColor, color, borderRadius }}
       disabled = {isValid}
       className={` text-${size} p-3 w-${width} disabled:cursor-not-allowed active:scale-95 disabled:active:scale-100 hover:drop-shadow-xl hover:bg-${bgHoverColor} ${className}`}
     >
-      {icon} {text}
+      {icon} {text} {children}
     </button>
   );
 };

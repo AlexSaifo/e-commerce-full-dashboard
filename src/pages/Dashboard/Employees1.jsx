@@ -19,12 +19,6 @@ import { useSelector } from "react-redux";
 import { selectAllEmployees } from "../app/employeesSlice";
 
 
-const Grid_Paging  ="grid_Paging";
-const Grid_Sorting = "grid_Sorting";
-const Grid_Filtering = "grid_Filtering";
-const Grid_Add = "grid_Add";
-const Grid_Editing = "grid_Editing";
-const Grid_Delete = "grid_Delete";
 
 
 const Employees = () => {

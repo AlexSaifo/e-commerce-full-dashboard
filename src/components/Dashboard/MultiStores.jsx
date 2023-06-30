@@ -12,30 +12,28 @@ import {
   Filter,
   Sort,
 } from "@syncfusion/ej2-react-grids";
-import { employeesGrid } from "../../data/dummy";
-import { Header } from "../../components/Dashboard";
-import {
-  fetchEmployees,
-  removeEmployee,
-  selectAllEmployees,
-} from "../../app/employeesSlice";
-import { useDispatch } from "react-redux";
-
-import NewEmployee from "../../components/Dashboard/NewEmployee";
 import { useSelector } from "react-redux";
 import {
   selectAlertButtonText,
   selectAlertMessage,
   selectAlertType,
 } from "../../app/alertSlice";
-import Alert from "../../components/Dashboard/UI/Alert";
-import DataSpinner from "../../components/DataSpinner";
+import {
+  fetchStores,
+  removeStore,
+  selectAllStores,
+} from "../../app/storesSlice";
+import { useNavigate } from "react-router-dom";
+import Button from "./Button";
+import Alert from "./UI/Alert";
+import { storesGrid } from "../../data/dummy";
 import store from "../../app/store";
-
-const Employees = () => {
-  const dispatch = useDispatch();
-  const employeesData = useSelector(selectAllEmployees);
-  const showSpinner = employeesData.length === 0;
+import DataSpinner from "../DataSpinner";
+const Stores = () => {
+  const navigate = useNavigate();
+  const storesData = useSelector(selectAllStores);
+  const showSpinner = storesData.length === 0;
+  const { currentColor } = useSelector((state) => state.ui);
 
   const alertAddMessage = useSelector(selectAlertMessage);
   const alertType = useSelector(selectAlertType);
@@ -54,14 +52,12 @@ const Employees = () => {
       gridRef.current.getSelectedRecords()[0] &&
       args.item.id.includes("delete")
     ) {
+      setIsDelete(true);
       const selectedRecords = gridRef.current.getSelectedRecords();
-      if (selectedRecords[0]) {
-        setIsDelete(true);
-        selectedRecords.forEach((record) => {
-          dispatch(removeEmployee(record.EmployeeID));
-        });
-        gridRef.current.refresh();
-      }
+      selectedRecords.forEach((record) => {
+        store.dispatch(removeStore(record.storeID));
+      });
+      gridRef.current.refresh();
     }
   };
 
@@ -74,13 +70,25 @@ const Employees = () => {
   };
 
   return (
-    <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl dark:bg-secondary-dark-bg">
-      <Header category="Page" title="Employees" />
+    <>
       <DataSpinner showSpinner={showSpinner} />
       {!showSpinner && (
         <>
           <div className="flex flex-row w-full justify-end items-center mb-4 ">
-            <NewEmployee />
+            <Button
+              bgColor={currentColor}
+              color="white"
+              bgHoverColor="light-gray"
+              size="xl"
+              borderRadius="1.2rem"
+              text="Add New Store"
+              width="auto"
+              customFunc={() => {
+                navigate("/dashboard/stores/add");
+              }}
+              className="active:scale-95"
+              isValid={false}
+            />
             {alertAddMessage && isDelete && (
               <Alert
                 type={alertType}
@@ -92,7 +100,7 @@ const Employees = () => {
           </div>
           <GridComponent
             ref={gridRef}
-            dataSource={employeesData}
+            dataSource={storesData}
             width="auto"
             allowPaging
             allowSorting
@@ -104,7 +112,7 @@ const Employees = () => {
           >
             <ColumnsDirective>
               {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-              {employeesGrid.map((item, index) => (
+              {storesGrid.map((item, index) => (
                 <ColumnDirective key={index} {...item} />
               ))}
             </ColumnsDirective>
@@ -122,15 +130,15 @@ const Employees = () => {
           </GridComponent>
         </>
       )}
-    </div>
+    </>
   );
 };
-export default Employees;
+export default Stores;
 
-export const employeeLoader = async () => {
+export const storesLoader = async () => {
   try {
     setTimeout(() => {
-      store.dispatch(fetchEmployees());
+      store.dispatch(fetchStores());
     }, 1500);
     return true;
   } catch (error) {

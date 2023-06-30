@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import {
@@ -75,7 +75,8 @@ function NewEmployee() {
     if (alertType === "success" && isAdd) {
       closeBackDrop();
     }
-  }, [alertType]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [alertType ]);
 
   return (
     <>

@@ -1,25 +1,10 @@
 import React, { useEffect } from "react";
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { FiSettings } from "react-icons/fi";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 
 import { Navbar, Footer, Sidebar, ThemeSettings } from "../components/Dashboard";
-import {
-  Ecommerce,
-  Orders,
-  Calendar,
-  Employees,
-  Stacked,
-  Pyramid,
-  Customers,
-  Line,
-  Area,
-  Bar,
-  Pie,
-  Financial,
-  ColorMapping,
-  Faq
-} from "../pages/Dashboard";
+
 import "../App.css";
 
 import { useSelector } from "react-redux";
@@ -29,7 +14,6 @@ import {
   setCurrentMode,
   setThemeSettings,
 } from "../app/uiSlice";
-import ContactUs from "../pages/Dashboard/ContactUs";
 
 const DashboardRootLayout = () => {
   const { currentMode, activeMenu, currentColor, themeSettings } = useSelector(

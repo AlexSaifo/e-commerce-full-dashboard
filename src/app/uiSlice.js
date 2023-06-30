@@ -18,6 +18,10 @@ const uiSlice = createSlice({
   name: "ui",
   initialState,
   reducers: {
+    fetchMode(state, action) {
+      const curMode = localStorage.getItem("colorMode");
+      if (curMode) state.currentMode = curMode;
+    },
     setScreenSize(state, action) {
       state.screenSize = action.payload;
     },
@@ -49,6 +53,7 @@ export const {
   setCurrentMode,
   setScreenSize,
   setThemeSettings,
+  fetchMode,
   handelClick,
 } = uiSlice.actions;
 

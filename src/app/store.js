@@ -4,6 +4,9 @@ import { employeesReducer } from "./employeesSlice";
 import { ordersReducer } from "./ordersSlice";
 import { uiReducer } from "./uiSlice";
 import { alertReducer } from "./alertSlice";
+import { contactUsReducer } from "./contactUsSlice";
+import { reportsReducer } from "./reportsSlice";
+import { storesReducer } from "./storesSlice";
 
 
 
@@ -14,8 +17,10 @@ const store = configureStore({
     employees: employeesReducer,
     customers: customersReducer,
     alert: alertReducer,
+    contactUs:contactUsReducer,
+    reports:reportsReducer,
+    stores:storesReducer,
   },
-
 });
 
 export default store;
