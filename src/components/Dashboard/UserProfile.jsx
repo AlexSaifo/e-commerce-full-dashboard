@@ -7,9 +7,9 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import avatar from "../../data/avatar.jpg";
-import { googleLogout } from "@react-oauth/google";
+import { logout } from "../../app/auth/authSlice";
 
-const UserProfile = () => {
+const UserProfile = ({ user }) => {
   const { currentColor } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -18,7 +18,12 @@ const UserProfile = () => {
     <div className="nav-item absolute right-1 top-16 bg-white dark:bg-[#42464D] p-8 rounded-lg w-96">
       <div className="flex justify-between items-center">
         <p className="font-semibold text-lg dark:text-gray-200">
-          Admin Profile
+          {user.role_id == 1
+            ? "Admin"
+            : user.role_id == 2
+            ? "Employee"
+            : "Store"}{" "}
+          Profile
         </p>
         <Button
           icon={<MdOutlineCancel />}
@@ -32,23 +37,22 @@ const UserProfile = () => {
         />
       </div>
       <div className="flex gap-5 items-center mt-6 border-color border-b-1 pb-6">
-        <img
-          className="rounded-full h-24 w-24"
-          src={avatar}
-          alt="admin-profile"
-        />
+        {user?.image && (
+          <img
+            className="rounded-full h-24 w-24"
+            src={user?.image}
+            alt={user.name}
+          />
+        )}
         <div>
           <p className="font-semibold text-xl dark:text-gray-200">
             {" "}
-            Michael Roberts{" "}
+            {user.name.toUpperCase()}
           </p>
-          <p className="text-gray-500 text-sm dark:text-gray-400">
-            {" "}
-            Administrator{" "}
-          </p>
+
           <p className="text-gray-500 text-sm font-semibold dark:text-gray-400">
             {" "}
-            info@shop.com{" "}
+            {user.email.toUpperCase()}
           </p>
         </div>
       </div>
@@ -84,7 +88,8 @@ const UserProfile = () => {
           borderRadius="10px"
           width="full"
           customFunc={() => {
-            googleLogout();
+            //googleLogout();
+            dispatch(logout());
             navigate("/");
           }}
         />

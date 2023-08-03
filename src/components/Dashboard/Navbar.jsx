@@ -27,6 +27,7 @@ const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
   </TooltipComponent>
 );
 const Navbar = () => {
+  const user = useSelector(state => state.auth.user);
   const { activeMenu, screenSize, currentColor, isClicked } = useSelector(
     (state) => state.ui
   );
@@ -102,11 +103,11 @@ const Navbar = () => {
               dispatch(handelClick("userProfile"));
             }}
           >
-            <img src={avatar} alt='avatar' className="rounded-full w-8 h-8 " />
+            {user?.image && <img src={user?.image} alt={user.name} className="rounded-full w-8 h-8 " />}
             <p>
               <span className="text-gray-400 text-14">Hi, </span>{" "}
               <span className="text-gray-400 font-bold ml-1 text-14">
-                Michael
+                {user?.name.toLocaleUpperCase()}
               </span>
             </p>
             <MdKeyboardArrowDown className="text-gray-400 text-14 " />
@@ -116,7 +117,7 @@ const Navbar = () => {
         {isClicked.cart && <Cart />}
         {isClicked.chat && <Chat />}
         {isClicked.notification && <Notification />}
-        {isClicked.userProfile && <UserProfile />}
+        {isClicked.userProfile && <UserProfile user={user} />}
       </div>
     </div>
   );

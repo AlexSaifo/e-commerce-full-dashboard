@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../app/auth/authSlice";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
 
   const toggleNav = () => {
     setIsOpen(!isOpen);
@@ -47,16 +51,40 @@ const Navbar = () => {
               {label}
             </Link>
           ))}
-          <Link to={"auth"}>
+          {user && (
+            <Link
+              key={"dashboard"}
+              to={"/dashboard/ecommerce"}
+              className="hover:bg-gray-800 rounded px-3 py-2 mr-2"
+              onClick={() => setIsOpen(false)}
+            >
+              Dashboard
+            </Link>
+          )}
+          {!user ? (
+            <Link to={"auth"}>
+              <motion.button
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+                className="hover:bg-gray-800 py-2 px-4 rounded-md bg-blue-600 ml-4"
+              >
+                Login
+              </motion.button>
+            </Link>
+          ) : (
             <motion.button
               variants={buttonVariants}
               whileHover="hover"
               whileTap="tap"
               className="hover:bg-gray-800 py-2 px-4 rounded-md bg-blue-600 ml-4"
+              onClick={() => {
+                dispatch(logout());
+              }}
             >
-              Login
+              Logout
             </motion.button>
-          </Link>
+          )}
         </div>
 
         <div className="block md:hidden">

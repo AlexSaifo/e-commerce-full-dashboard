@@ -15,6 +15,8 @@ import { useDispatch } from "react-redux";
 
 const Sidebar = () => {
   const { activeMenu , screenSize , currentColor} = useSelector(state => state.ui);
+  const user = useSelector(state => state.auth.user);
+  const role_id = user.role_id
   const dispatch = useDispatch();
 
   const handleCloseSideBar = ()=>{
@@ -53,33 +55,44 @@ const Sidebar = () => {
           </div>
           {/*End Logo Menu*/}
           <div className="mt-10">
-            {links.map((item , idx) => (
-              <div key={idx}>
-                <p
-                  key={item.title}
-                  className="dark:text-gray-400 text-gray-700  m-3 mt-4 uppercase cursor-pointer"
-                >
-                  {item.title}
-                </p>
-                {item.links.map((link , idx) => (
-                  <NavLink
-                    to={`${link.name.split(" ").join("")}`}
-                    key={idx}
-                    onClick={() => {
-                      handleCloseSideBar()
-                    }}
-                    style= {({isActive})=>({backgroundColor:isActive ? currentColor : '' })}
-
-                    className={({ isActive }) =>
-                      isActive ? activeLink : normalLink
-                    }
+            {links.map((item , idx) => {            
+              return (
+                <div key={idx}>
+                  <p
+                    key={item.title}
+                    className="dark:text-gray-400 text-gray-700  m-3 mt-4 uppercase cursor-pointer"
                   >
-                    {link.icon}
-                    <span className="capitalize">{link.name}</span> 
-                  </NavLink>
-                ))}
-              </div>
-            ))}
+                    {item.title}
+                  </p>
+                  {item.links.filter(item => {
+              if(item?.role_id){
+                console.log(role_id , item?.role_id)
+                if(item?.role_id > role_id){
+                  return true;
+                }
+                return false;
+              }
+              return true;
+            } ).map((link , idx) => (
+                    <NavLink
+                      to={`${link.name.split(" ").join("")}`}
+                      key={idx}
+                      onClick={() => {
+                        handleCloseSideBar()
+                      }}
+                      style= {({isActive})=>({backgroundColor:isActive ? currentColor : '' })}
+  
+                      className={({ isActive }) =>
+                        isActive ? activeLink : normalLink
+                      }
+                    >
+                      {link.icon}
+                      <span className="capitalize">{link.name}</span> 
+                    </NavLink>
+                  ))}
+                </div>
+              )
+            })}
           </div>
         </>
       )}

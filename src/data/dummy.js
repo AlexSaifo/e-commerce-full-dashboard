@@ -26,14 +26,14 @@ import {
   BsChatLeft,
 } from "react-icons/bs";
 import { CgProfile } from "react-icons/cg";
-import { BiColorFill } from "react-icons/bi";
+import { BiCategoryAlt, BiColorFill } from "react-icons/bi";
 import { IoMdContacts } from "react-icons/io";
 import {
   RiContactsLine,
   RiStockLine,
   RiCustomerServiceFill,
 } from "react-icons/ri";
-import { MdOutlineReportGmailerrorred } from "react-icons/md";
+import { MdOutlineDeliveryDining, MdOutlineProductionQuantityLimits, MdOutlineReportGmailerrorred } from "react-icons/md";
 import { MdOutlineSupervisorAccount } from "react-icons/md";
 import { HiOutlineRefresh } from "react-icons/hi";
 import { TiTick } from "react-icons/ti";
@@ -51,6 +51,8 @@ import product5 from "./product5.jpg";
 import product6 from "./product6.jpg";
 import product7 from "./product7.jpg";
 import product8 from "./product8.jpg";
+
+
 
 export const gridOrderImage = (props) => (
   <div>
@@ -90,10 +92,9 @@ const gridEmployeeProfile = (props) => (
   <div className="flex items-center gap-2">
     <img
       className="rounded-full w-10 h-10"
-      src={props.EmployeeImage}
-      alt="employee"
+      src={props?.photo}
+      alt={props.name}
     />
-    <p>{props.Name}</p>
   </div>
 );
 
@@ -557,83 +558,79 @@ export const reportsGrid = [
 
 export const employeesGrid = [
   {
-    headerText: "Employee",
-    width: "150",
+    field: "user_id",
+    headerText: "ID",
+    width: "50",
+    textAlign: "Center",
+  },
+  {
+    headerText: "Photo",
+    width: "120",
     template: gridEmployeeProfile,
     textAlign: "Center",
   },
-  { field: "Name", headerText: "", width: "0", textAlign: "Center" },
+  { field: "name", headerText: "Name", width: "120", textAlign: "Center" },
   {
-    field: "Title",
-    headerText: "Designation",
-    width: "170",
-    textAlign: "Center",
-  },
-  {
-    headerText: "Country",
-    field: "Country",
-    width: "120",
+    field: "location",
+    headerText: "Location",
+    width: "400",
     textAlign: "Center",
     //template: gridEmployeeCountry
   },
 
   {
-    field: "HireDate",
-    headerText: "Hire Date",
-    width: "135",
+    field: "email",
+    headerText: "Email",
+    width: "250",
+    format: "yMd",
+    textAlign: "Center",
+  },
+  {
+    field: "phone_number",
+    headerText: "Phone",
+    width: "250",
     format: "yMd",
     textAlign: "Center",
   },
 
-  {
-    field: "ReportsTo",
-    headerText: "Reports To",
-    width: "120",
-    textAlign: "Center",
-  },
-  {
-    field: "EmployeeID",
-    headerText: "Employee ID",
-    width: "125",
-    textAlign: "Center",
-  },
 ];
 
 export const storesGrid = [
   {
-    field: "storeID",
+    field: "store_id",
     headerText: "ID",
-    width: "40",
+    width: "80",
     textAlign: "Center",
     isPrimaryKey: true,
   },
-  { headerText: "Name", field: "Name", width: "100", textAlign: "Center" },
+  { headerText: "Name", field: "store_name", width: "150", textAlign: "Center" },
   {
-    field: "email",
-    headerText: "Email",
-    width: "80",
+    field: "description",
+    headerText: "Description",
+    width: "300",
     format: "yMd",
     textAlign: "Center",
   },
   {
-    field: "address",
-    headerText: "Address",
-    width: "80",
-    textAlign: "Center",
-  },
-  {
-    field: "phone",
-    headerText: "Phone",
-    width: "80",
-    textAlign: "Center",
-  },
-  {
-    field: "bio",
-    headerText: "Bio",
-    width: "150",
+    field: "location",
+    headerText: "Location",
+    width: "200",
     format: "C2",
     textAlign: "Center",
   },
+  {
+    field: "address_details",
+    headerText: "Address",
+    width: "300",
+    textAlign: "Center",
+  },
+  {
+    field: "rate",
+    headerText: "Rate",
+    width: "150",
+    textAlign: "Center",
+  },
+  
 ];
 
 export const links = [
@@ -655,20 +652,20 @@ export const links = [
     title: "Pages",
     links: [
       {
-        name: "orders",
-        icon: <AiOutlineShoppingCart />,
-      },
-      {
         name: "employees",
         icon: <IoMdContacts />,
+      },
+      {
+        name: "stores",
+        icon: <FaStore />,
       },
       {
         name: "customers",
         icon: <RiContactsLine />,
       },
       {
-        name: "stores",
-        icon: <FaStore />,
+        name: "orders",
+        icon: <AiOutlineShoppingCart />,
       },
       {
         name: "contact-us",
@@ -681,12 +678,27 @@ export const links = [
     ],
   },
   {
-    title: "Apps",
+    title: "Inner Pages",
     links: [
       {
         name: "calendar",
         icon: <AiOutlineCalendar />,
       },
+      {
+        name: "categories",
+        icon: <BiCategoryAlt />,
+        role_id:0
+      },
+      {
+        name: "items",
+        icon: <MdOutlineProductionQuantityLimits />,
+        role_id:0
+      },
+      {
+        name:'Delivery',
+        icon:<MdOutlineDeliveryDining/>,
+        role_id:0
+      }
       // {
       //   name: 'kanban',
       //   icon: <BsKanban />,

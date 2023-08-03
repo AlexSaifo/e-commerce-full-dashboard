@@ -5,15 +5,24 @@ import {
   selectAlertButtonText,
   selectAlertMessage,
   selectAlertType,
+  setAlert,
+  clearAlert,
 } from "../../app/alertSlice";
-import { addNewEmployee } from "../../app/employeesSlice";
+import { addEmployee as addNewEmployeeDispatch } from "../../app/employeesSlice";
 import Button from "./Button";
 import Alert from "./UI/Alert";
 import Input from "./UI/Input";
 import Modal from "./UI/Modal";
+import { useAddNewEmployeeMutation } from "../../app/api/employeesApi";
 
 function NewEmployee() {
   const dispatch = useDispatch();
+  const [addNewEmployee, { isSuccess, isLoading, isError, error: addError }] =
+    useAddNewEmployeeMutation();
+
+  const [errorsMessage, setErrorsMessage] = useState(
+    addError?.data?.errors?.email || null
+  );
 
   const alertAddMessage = useSelector(selectAlertMessage);
   const alertType = useSelector(selectAlertType);
@@ -24,7 +33,21 @@ function NewEmployee() {
   const [email, setEmail] = useState("");
   const [isValid, setIsValid] = useState(true);
   const [isAdd, setIsAdd] = useState(false);
-  
+
+  useEffect(() => {
+    if (isError) {
+      setErrorsMessage(addError?.data?.errors?.email);
+    } else if (isSuccess) {
+      dispatch(
+        setAlert({
+          message: "The Employee Added successfully",
+          type: "success",
+          buttonText: "Ok",
+        })
+      );
+    }
+  }, [isError, isSuccess]);
+  console.log(isSuccess, isLoading, isError, addError, errorsMessage);
 
   const closeBackDrop = () => {
     setHideNewEmployee(false);
@@ -33,6 +56,7 @@ function NewEmployee() {
   };
 
   const handleSubmit = (event) => {
+    setIsValid(true);
     let email = event.target.value;
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     const testValue = emailRegex.test(email);
@@ -40,55 +64,74 @@ function NewEmployee() {
 
     if (testValue) {
       setIsValid(false);
-    } else {
-      setIsValid(true);
     }
   };
 
   const addNewEmployeeHandler = () => {
     const inputValue = email;
     if (!isValid) {
-      dispatch(
-        addNewEmployee({
-          newEmployee: {
-            email: inputValue,
-          },
-        })
-      );
+      addNewEmployee({
+        email: email,
+      });
     }
   };
 
   const onCloseAlertAddHandler = () => {
-    if (
-      alertType === "info" ||
-      alertType === "error" ||
-      alertType === "pending"
-    ) {
-      return;
-    } else if (alertType === "success") {
-      window.location.reload();
-    }
+    // if (
+    //   alertType === "info" ||
+    //   alertType === "error" ||
+    //   alertType === "pending"
+    // ) {
+    //   return;
+    // } else if (alertType === "success") {
+    //   window.location.reload();
+    // }
+    return;
   };
-
 
   useEffect(() => {
     if (alertType === "success" && isAdd) {
       closeBackDrop();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alertType ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [alertType]);
+
+  if (isError && errorsMessage) {
+    return (
+      <Alert
+        type={"error"}
+        message={errorsMessage}
+        buttonText={"Ok"}
+        onClose={() => {
+          setErrorsMessage(null);
+          setIsValid(true);
+        }}
+      />
+    );
+  }
+
+  if (isLoading) {
+    return <Alert type={"pending"} message={"pending"} buttonText={""} />;
+  }
+
+  if (isSuccess && alertAddMessage) {
+    return (
+      <Alert
+        type={alertType}
+        message={alertAddMessage}
+        buttonText={alertButtonText}
+        onClose={() => {
+          setErrorsMessage("");
+          dispatch(addNewEmployeeDispatch());
+          dispatch(clearAlert);
+          closeBackDrop();
+        }}
+      />
+    );
+  }
 
   return (
     <>
-      {alertAddMessage && isAdd && (
-        <Alert
-          type={alertType}
-          message={alertAddMessage}
-          buttonText={alertButtonText}
-          onClose={onCloseAlertAddHandler}
-        />
-      )}
-
       <Button
         bgColor={currentColor}
         color="white"
