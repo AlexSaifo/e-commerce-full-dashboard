@@ -6,25 +6,23 @@ import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 
 import { links } from "../../data/dummy";
 
-
-import {setActiveMenu} from '../../app/uiSlice'
+import { setActiveMenu } from "../../app/uiSlice";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-  
-
 
 const Sidebar = () => {
-  const { activeMenu , screenSize , currentColor} = useSelector(state => state.ui);
-  const user = useSelector(state => state.auth.user);
-  const role_id = user.role_id
+  const { activeMenu, screenSize, currentColor } = useSelector(
+    (state) => state.ui
+  );
+  const user = useSelector((state) => state.auth.user);
+  const role_id = user.role_id;
   const dispatch = useDispatch();
 
-  const handleCloseSideBar = ()=>{
-    if(activeMenu && screenSize<=900){
+  const handleCloseSideBar = () => {
+    if (activeMenu && screenSize <= 900) {
       dispatch(setActiveMenu(false));
     }
-  }
-
+  };
 
   const activeLink = `flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-white text-md m-2`;
   const normalLink = `flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-md text-gray-700 dark:text-gray-200 dark:hover:text-black hover:bg-light-gray m-2`;
@@ -45,7 +43,7 @@ const Sidebar = () => {
               <button
                 type="button"
                 onClick={() => {
-                  handleCloseSideBar()
+                  handleCloseSideBar();
                 }}
                 className="text-xl rounded-full p-3 hover:bg-light-gray mt-4 block md:hidden"
               >
@@ -55,7 +53,8 @@ const Sidebar = () => {
           </div>
           {/*End Logo Menu*/}
           <div className="mt-10">
-            {links.map((item , idx) => {            
+            {links.map((item, idx) => {
+              console.log("Links", links);
               return (
                 <div key={idx}>
                   <p
@@ -64,34 +63,55 @@ const Sidebar = () => {
                   >
                     {item.title}
                   </p>
-                  {item.links.filter(item => {
-              if(item?.role_id){
-                console.log(role_id , item?.role_id)
-                if(item?.role_id > role_id){
-                  return true;
-                }
-                return false;
-              }
-              return true;
-            } ).map((link , idx) => (
-                    <NavLink
-                      to={`${link.name.split(" ").join("")}`}
-                      key={idx}
-                      onClick={() => {
-                        handleCloseSideBar()
-                      }}
-                      style= {({isActive})=>({backgroundColor:isActive ? currentColor : '' })}
-  
-                      className={({ isActive }) =>
-                        isActive ? activeLink : normalLink
+                  {item.links
+                    .filter((linkItem) => {
+                      console.log(linkItem?.role_id);
+
+                      if (role_id == 3) {
+                        if (
+                          linkItem?.role_id != undefined &&
+                          role_id == linkItem?.role_id
+                        ) {
+                          return true;
+                        } else if (
+                          linkItem?.role_id != undefined &&
+                          role_id != linkItem?.role_id
+                        ) {
+                          return false;
+                        }
+                      }else if(role_id <3){
+                        if (linkItem?.role_id != undefined && linkItem?.role_id < 3) {
+                          return true;
+                        } else if (
+                          linkItem?.role_id != undefined &&
+                          linkItem?.role_id > 2
+                        ) {
+                          return false;
+                        }
                       }
-                    >
-                      {link.icon}
-                      <span className="capitalize">{link.name}</span> 
-                    </NavLink>
-                  ))}
+
+                      return true;
+                    })
+                    .map((link, idx) => (
+                      <NavLink
+                        to={`${link.name.split(" ").join("")}`}
+                        key={idx}
+                        onClick={() => {
+                          handleCloseSideBar();
+                        }}
+                        style={({ isActive }) => ({
+                          backgroundColor: isActive ? currentColor : "",
+                        })}
+                        className={({ isActive }) =>
+                          isActive ? activeLink : normalLink
+                        }
+                      >
+                        {link.icon}
+                        <span className="capitalize">{link.name}</span>
+                      </NavLink>
+                    ))}
                 </div>
-              )
+              );
             })}
           </div>
         </>

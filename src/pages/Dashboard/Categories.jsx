@@ -28,6 +28,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { Header } from "../../components/Dashboard";
 import { Dna } from "react-loader-spinner";
+import DataSpinner from "../../components/DataSpinner";
 
 function Categories() {
   const { id } = useParams();
@@ -235,24 +236,10 @@ function Categories() {
 
   if (isLoading) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          height: "70vh",
-        }}
-      >
-        <Dna
-          visible={true}
-          height="80"
-          width="80"
-          ariaLabel="dna-loading"
-          wrapperStyle={{}}
-          wrapperClass="dna-wrapper"
-        />
-      </Box>
+      <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl dark:bg-secondary-dark-bg">
+        <Header category="Inner Pages" title="Categories" />
+        <DataSpinner showSpinner={true} />
+      </div>
     );
   }
 

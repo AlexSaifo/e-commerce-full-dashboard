@@ -31,7 +31,8 @@ const Store = () => {
     if (isSuccess) {
       setStoreInfo(storeData?.data);
       setEditedStore(storeData?.data);
-      setImagePreview(storeData?.data?.image); // Set the image preview URL from store data
+      setImagePreview(storeData?.data?.photo); // Set the image preview URL from store data
+      console.log(imagePreview , storeData?.data?.photo )
     } else if (isError) {
       // Handle error
       if (+showError.status === +422) {
@@ -39,6 +40,8 @@ const Store = () => {
       }
     }
   }, [isSuccess, isError]);
+
+
 
   return (
     <Box>
@@ -55,7 +58,7 @@ const Store = () => {
       >
         <Avatar
           alt="Store Image"
-          src={imagePreview}
+          src={`http://127.0.0.1:8000`+imagePreview}
           sx={{ width: 100, height: 100, alignSelf: "center" }}
         />
         <TextField

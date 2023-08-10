@@ -36,7 +36,7 @@ function NewEmployee() {
 
   useEffect(() => {
     if (isError) {
-      setErrorsMessage(addError?.data?.errors?.email);
+      setErrorsMessage(addError?.data?.errors?.email || addError?.data?.errors?.error);
     } else if (isSuccess) {
       dispatch(
         setAlert({

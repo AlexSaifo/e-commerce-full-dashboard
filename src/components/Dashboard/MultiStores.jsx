@@ -32,6 +32,7 @@ import {
 import { useEffect } from "react";
 import { addStores, selectAllStores } from "../../app/storesSlice";
 import { BiShow } from "react-icons/bi";
+import { MdDeleteOutline } from "react-icons/md";
 
 const Stores = () => {
   const navigate = useNavigate();
@@ -70,8 +71,17 @@ const Stores = () => {
   useEffect(() => {
     if (isSuccess && !removeIsError) {
       dispatch(addStores(allStores?.data));
+    }else if(isError){
+      dispatch(
+        setAlert({
+          message: fetchError?.data.errors.errors,
+          type: "error",
+          buttonText: "ok",
+        })
+      );
     }
-  }, [isSuccess]);
+  }, [isSuccess , isError]);
+
   useEffect(() => {
     if (removeIsSuccess) {
       dispatch(
@@ -100,32 +110,40 @@ const Stores = () => {
     </button>
   );
 
+  const DeleteButton = () => (
+    <button className="e-tbar-btn mr-1 flex items-center">
+      <MdDeleteOutline className="w-5 h-5 m-2" />
+      <span>Delete</span>
+    </button>
+  );
+
   const toolbarOptions = [
     "Search",
-    "Delete",
+    { id: "Delete", template: DeleteButton },
     "PdfExport",
     "ExcelExport",
     { id: "Show", template: ShowButton },
   ];
+
   const toolbarClick = (args) => {
     console.log(args, gridRef);
-    if (gridRef.current && args.item.id.includes("pdfexport")) {
-      gridRef.current.pdfExport();
-    } else if (gridRef.current && args.item.id.includes("excelexport")) {
-      gridRef.current.excelExport();
+    if (gridRef.current && args?.item?.id?.includes("pdfexport")) {
+      gridRef?.current.pdfExport();
+    } else if (gridRef?.current && args?.item?.id?.includes("excelexport")) {
+      gridRef?.current?.excelExport();
     } else if (
-      gridRef.current.getSelectedRecords()[0] &&
-      args.item.id.includes("delete")
+      gridRef?.current?.getSelectedRecords()[0] &&
+      args?.item?.id?.includes("Delete")
     ) {
       setIsDelete(true);
       const selectedRecords = gridRef.current.getSelectedRecords();
-      selectedRecords.forEach((record) => {
-        deleteStore(record.store_id);
+      selectedRecords?.forEach((record) => {
+        deleteStore(record?.store_id);
       });
-      gridRef.current.refresh();
+      
     } else if (
-      gridRef.current.getSelectedRecords() &&
-      args.item.id.includes("Show")
+      gridRef?.current?.getSelectedRecords() &&
+      args?.item?.id?.includes("Show")
     ) {
       const item = gridRef.current.getSelectedRecords();
       if (item[0]) {

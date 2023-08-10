@@ -6,6 +6,7 @@ import {
   AiOutlineAreaChart,
   AiOutlineBarChart,
   AiOutlineStock,
+  AiOutlineTransaction,
 } from "react-icons/ai";
 import {
   FiShoppingBag,
@@ -33,7 +34,11 @@ import {
   RiStockLine,
   RiCustomerServiceFill,
 } from "react-icons/ri";
-import { MdOutlineDeliveryDining, MdOutlineProductionQuantityLimits, MdOutlineReportGmailerrorred } from "react-icons/md";
+import {
+  MdOutlineDeliveryDining,
+  MdOutlineProductionQuantityLimits,
+  MdOutlineReportGmailerrorred,
+} from "react-icons/md";
 import { MdOutlineSupervisorAccount } from "react-icons/md";
 import { HiOutlineRefresh } from "react-icons/hi";
 import { TiTick } from "react-icons/ti";
@@ -52,8 +57,6 @@ import product6 from "./product6.jpg";
 import product7 from "./product7.jpg";
 import product8 from "./product8.jpg";
 
-
-
 export const gridOrderImage = (props) => (
   <div>
     <img
@@ -64,15 +67,37 @@ export const gridOrderImage = (props) => (
   </div>
 );
 
-export const gridOrderStatus = (props) => (
-  <button
-    type="button"
-    style={{ background: props.StatusBg }}
-    className="text-white py-1 px-2 capitalize rounded-2xl text-md"
-  >
-    {props.Status}
-  </button>
+export const gridItemImage = (props) => (
+  <div>
+    <img
+      className="rounded-xl h-20 md:ml-3"
+      src={`http://127.0.0.1:8000` + props.photos[0]}
+      alt="order-item"
+    />
+  </div>
 );
+
+export const gridOrderStatus = (props) => {
+  const status = {
+    pending: "#FB9678",
+    delivered: "#8BE78B",
+    shipped: "#03C9D7",
+    canceled: "red",
+    "returned to store": "#FF5C8E",
+    "shipped back": "#FF5C8E",
+  };
+  console.log(status[`${props.order_status}`], props.order_status);
+
+  return (
+    <button
+      type="button"
+      style={{ background: status[`${props.order_status}`] }}
+      className="text-white py-1 px-2 capitalize rounded-2xl text-md"
+    >
+      {props.order_status}
+    </button>
+  );
+};
 
 export const kanbanGrid = [
   { headerText: "To Do", keyField: "Open", allowToggle: true },
@@ -464,7 +489,7 @@ export const customersGrid = [
     headerText: "Location",
     width: "100",
     textAlign: "Center",
-  }
+  },
 ];
 
 export const contactUsGrid = [
@@ -592,7 +617,45 @@ export const employeesGrid = [
     format: "yMd",
     textAlign: "Center",
   },
+];
 
+export const deliveriesGrid = [
+  {
+    field: "delivary_id",
+    headerText: "ID",
+    width: "80",
+    textAlign: "Center",
+  },
+  { field: "name", headerText: "Name", width: "120", textAlign: "Center" },
+  { field: "role", headerText: "Role", width: "120", textAlign: "Center" },
+  {
+    field: "location",
+    headerText: "Location",
+    width: "400",
+    textAlign: "Center",
+    //template: gridEmployeeCountry
+  },
+
+  {
+    field: "email",
+    headerText: "Email",
+    width: "250",
+    format: "yMd",
+    textAlign: "Center",
+  },
+  {
+    field: "phone_number",
+    headerText: "Phone",
+    width: "250",
+    format: "yMd",
+    textAlign: "Center",
+  },
+  {
+    field: "store_name",
+    headerText: "Store Name",
+    width: "250",
+    textAlign: "Center",
+  },
 ];
 
 export const storesGrid = [
@@ -603,7 +666,12 @@ export const storesGrid = [
     textAlign: "Center",
     isPrimaryKey: true,
   },
-  { headerText: "Name", field: "store_name", width: "150", textAlign: "Center" },
+  {
+    headerText: "Name",
+    field: "store_name",
+    width: "150",
+    textAlign: "Center",
+  },
   {
     field: "description",
     headerText: "Description",
@@ -630,7 +698,6 @@ export const storesGrid = [
     width: "150",
     textAlign: "Center",
   },
-  
 ];
 
 export const links = [
@@ -654,26 +721,31 @@ export const links = [
       {
         name: "employees",
         icon: <IoMdContacts />,
+        role_id: 0,
       },
       {
         name: "stores",
         icon: <FaStore />,
+        role_id: 0,
       },
       {
         name: "customers",
         icon: <RiContactsLine />,
-      },
-      {
-        name: "orders",
-        icon: <AiOutlineShoppingCart />,
+        role_id: 0,
       },
       {
         name: "contact-us",
         icon: <RiCustomerServiceFill />,
+        role_id: 0,
       },
       {
         name: "reports",
         icon: <MdOutlineReportGmailerrorred />,
+        role_id: 0,
+      },
+      {
+        name: "transactions",
+        icon: <AiOutlineTransaction />,
       },
     ],
   },
@@ -685,69 +757,24 @@ export const links = [
         icon: <AiOutlineCalendar />,
       },
       {
+        name: "orders",
+        icon: <AiOutlineShoppingCart />,
+        role_id: 3,
+      },
+      {
         name: "categories",
         icon: <BiCategoryAlt />,
-        role_id:0
+        role_id: 0,
       },
       {
         name: "items",
         icon: <MdOutlineProductionQuantityLimits />,
-        role_id:0
+        role_id: 3,
       },
       {
-        name:'Delivery',
-        icon:<MdOutlineDeliveryDining/>,
-        role_id:0
-      }
-      // {
-      //   name: 'kanban',
-      //   icon: <BsKanban />,
-      // },
-      // {
-      //   name: 'editor',
-      //   icon: <FiEdit />,
-      // },
-      // {
-      //   name: 'color-picker',
-      //   icon: <BiColorFill />,
-      // },
-    ],
-  },
-  {
-    title: "Charts",
-    links: [
-      {
-        name: "line",
-        icon: <AiOutlineStock />,
-      },
-      {
-        name: "area",
-        icon: <AiOutlineAreaChart />,
-      },
-
-      {
-        name: "bar",
-        icon: <AiOutlineBarChart />,
-      },
-      {
-        name: "pie",
-        icon: <FiPieChart />,
-      },
-      {
-        name: "financial",
-        icon: <RiStockLine />,
-      },
-      {
-        name: "color-mapping",
-        icon: <BsBarChart />,
-      },
-      {
-        name: "pyramid",
-        icon: <GiLouvrePyramid />,
-      },
-      {
-        name: "stacked",
-        icon: <AiOutlineBarChart />,
+        name: "delivery",
+        icon: <MdOutlineDeliveryDining />,
+        role_id: 3,
       },
     ],
   },
@@ -1049,29 +1076,116 @@ export const userProfileData = [
   },
 ];
 
-export const ordersGrid = [
+export const transactionsGrid = [
   {
-    headerText: "Image",
-    template: gridOrderImage,
-    textAlign: "Center",
-    width: "120",
-  },
-  {
-    field: "OrderItems",
-    headerText: "Item",
-    width: "150",
+    field: "transaction_id",
+    headerText: "ID",
+    width: "80",
     editType: "dropdownedit",
     textAlign: "Center",
   },
   {
-    field: "CustomerName",
-    headerText: "Customer Name",
+    field: "balance",
+    headerText: "Value",
+    textAlign: "Center",
+    editType: "numericedit",
+    width: "100",
+  },
+  {
+    field: "transactions_type",
+    headerText: "Type",
+    editType: "dropdownedit",
+    textAlign: "center",
+    width: "100",
+  },
+  {
+    field: "transaction_status",
+    headerText: "Status",
+    editType: "dropdownedit",
+    textAlign: "center",
     width: "150",
+  },
+  {
+    field: "employee.name",
+    headerText: "Employee",
+    editType: "dropdownedit",
+    textAlign: "center",
+    width: "150",
+  },
+  {
+    field: "user.name",
+    headerText: "User",
+    editType: "dropdownedit",
+    textAlign: "center",
+    width: "150",
+  },
+  {
+    field: "user.user_id",
+    headerText: "User Id",
+    editType: "dropdownedit",
+    textAlign: "center",
+    width: "150",
+  },
+];
+
+export const ordersGrid = [
+  {
+    field: "order_id",
+    headerText: "ID",
+    width: "80",
+    editType: "dropdownedit",
     textAlign: "Center",
   },
   {
-    field: "TotalAmount",
-    headerText: "Total Amount",
+    field: "user_name",
+    headerText: "Order Owner",
+    editType: "dropdownedit",
+    textAlign: "center",
+    width: "150",
+  },
+  {
+    field: "phone_number",
+    headerText: "Owner's Phone",
+    editType: "dropdownedit",
+    textAlign: "center",
+    width: "150",
+  },
+  {
+    field: "store_name",
+    headerText: "Store",
+    editType: "dropdownedit",
+    textAlign: "center",
+    width: "150",
+  },
+  {
+    field: "delivery_name",
+    headerText: "Delivery",
+    editType: "dropdownedit",
+    textAlign: "center",
+    width: "150",
+  },
+  {
+    field: "order_location",
+    headerText: "To Location",
+    width: "350",
+    textAlign: "Center",
+  },
+  {
+    field: "address_details",
+    headerText: "Location Details",
+    width: "350",
+    textAlign: "Center",
+  },
+  {
+    field: "oredr_items",
+    headerText: "Order Items ",
+    width: "350",
+    editType: "dropdownedit",
+    textAlign: "Center",
+  },
+  {
+    field: "total_amount",
+    headerText: "TotalAmount",
     format: "C2",
     textAlign: "Center",
     editType: "numericedit",
@@ -1080,20 +1194,76 @@ export const ordersGrid = [
   {
     headerText: "Status",
     template: gridOrderStatus,
-    field: "OrderItems",
+    field: "order_status",
     textAlign: "Center",
     width: "120",
   },
-  {
-    field: "OrderID",
-    headerText: "Order ID",
-    width: "120",
-    textAlign: "Center",
-  },
+];
 
+export const itemsGrid = [
   {
-    field: "Location",
-    headerText: "Location",
+    field: "item_id",
+    headerText: "ID",
+    width: "100",
+    editType: "dropdownedit",
+    textAlign: "Center",
+  },
+  {
+    headerText: "Image",
+    template: gridItemImage,
+    textAlign: "Center",
+    width: "120",
+  },
+  {
+    field: "name",
+    headerText: "Name",
+    width: "150",
+    textAlign: "Center",
+  },
+  {
+    field: "type",
+    headerText: "Type",
+    width: "100",
+    textAlign: "Center",
+  },
+  {
+    field: "details",
+    headerText: "Details",
+    width: "300",
+    textAlign: "Center",
+  },
+  {
+    field: "price",
+    headerText: "Price",
+    format: "C2",
+    textAlign: "Center",
+    editType: "numericedit",
+    width: "100",
+  },
+  {
+    field: "quantity",
+    headerText: "Quantity",
+    textAlign: "Center",
+    editType: "numericedit",
+    width: "100",
+  },
+  {
+    field: "rate",
+    headerText: "Rate",
+    textAlign: "Center",
+    editType: "numericedit",
+    width: "100",
+  },
+  {
+    field: "review_count",
+    headerText: "Review Count",
+    textAlign: "Center",
+    editType: "numericedit",
+    width: "100",
+  },
+  {
+    field: "store_name",
+    headerText: "Store Name",
     width: "150",
     textAlign: "Center",
   },

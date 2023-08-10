@@ -5,6 +5,12 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import avatar from "../../data/avatar.jpg";
 import { useSelector } from "react-redux";
 import { Button } from "../../components/Dashboard";
+import { InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  useFetchCitiesQuery,
+  useFetchStateByIDQuery,
+  useFetchStreetByIdQuery,
+} from "../../app/api/locationApi";
 
 function Profile() {
   const { currentColor } = useSelector((state) => state.ui);
@@ -12,9 +18,14 @@ function Profile() {
 
   // User Info
   const user = useSelector((state) => state.auth.user);
+
+  const { store } = user || {};
+
+  console.log(user, store);
+
   const roleID = user?.role_id;
   const [userInfo, setUserInfo] = useState(
-    user || {
+    (user.role_id == 3 ? store : user) || {
       name: "",
       email: "",
       phone: "",
@@ -28,6 +39,37 @@ function Profile() {
   const [imagePreviewUrl, setImagePreviewUrl] = useState(
     userInfo?.image_url || ""
   );
+
+  // Fetch all Cities
+  const { data: cities } = useFetchCitiesQuery();
+  // Fetch state by city id
+  const { data: cityStateData } = useFetchStateByIDQuery(userInfo.city_id, {
+    skip: !!!userInfo.city_id,
+  });
+  // Fetch street by state id
+  const { data: stateStreetData } = useFetchStreetByIdQuery(userInfo.state_id, {
+    skip: !!!userInfo.state_id,
+  });
+
+  useEffect(() => {
+    if (user.role_id == 3) {
+      const { location } = store || "";
+
+      let LocationArray = location.split(",");
+      LocationArray = LocationArray.map((loc) => {
+        loc = loc.trim();
+        return loc;
+      });
+
+      setUserInfo((prev) => {
+        return {
+          ...prev,
+          city_id: LocationArray[0],
+          state_id: LocationArray[1],
+        };
+      });  
+    }
+  }, [user]);
 
   // Password
   const [showPassword, setShowPassword] = useState(false);
@@ -99,8 +141,12 @@ function Profile() {
         {roleID > 2 && (
           <div className="relative w-32 h-32 rounded-full overflow-hidden">
             <img
-              src={imagePreviewUrl || userInfo?.image_url}
-              alt={userInfo?.name}
+              src={
+                imagePreviewUrl || !userInfo?.photo.includes("http")
+                  ? `http://127.0.0.1:8000` + userInfo?.photo
+                  : userInfo?.photo
+              }
+              alt={user.role_id == 3 ? userInfo?.store_name : userInfo?.name}
               className="w-32 h-32 rounded-full mx-auto mb-4"
             />
 
@@ -134,13 +180,17 @@ function Profile() {
               {isEditMode ? (
                 <input
                   type="text"
-                  name="name"
-                  value={userInfo?.name}
+                  name={user.role_id == 3 ? "store_name" : "name"}
+                  value={
+                    user.role_id == 3 ? userInfo?.store_name : userInfo?.name
+                  }
                   onChange={inputChangeHandler}
                   className="border p-2 rounded ml-2 dark:bg-secondary-dark-bg dark:text-gray-200"
                 />
               ) : (
-                <p className="ml-2">{userInfo?.name}</p>
+                <p className="ml-2">
+                  {user.role_id == 3 ? userInfo?.store_name : userInfo?.name}
+                </p>
               )}
             </div>
             <div className="flex items-center mt-2">
@@ -162,13 +212,13 @@ function Profile() {
               {isEditMode ? (
                 <input
                   type="text"
-                  name="phone"
-                  value={userInfo?.phone}
+                  name="phone_number"
+                  value={userInfo?.phone_number}
                   onChange={inputChangeHandler}
                   className="border p-2 rounded ml-2 dark:bg-secondary-dark-bg dark:text-gray-200"
                 />
               ) : (
-                <p className="ml-2">{userInfo?.phone}</p>
+                <p className="ml-2">{userInfo?.phone_number}</p>
               )}
             </div>
             {roleID > 2 && (
@@ -178,7 +228,7 @@ function Profile() {
                   {isEditMode ? (
                     <textarea
                       name="description"
-                      value={userInfo?.bio}
+                      value={userInfo?.description}
                       onChange={inputChangeHandler}
                       className="border p-2 rounded ml-2 dark:bg-secondary-dark-bg dark:text-gray-200"
                     />
@@ -187,19 +237,69 @@ function Profile() {
                   )}
                 </div>
                 <div className="flex items-center mt-2">
-                  <p className="font-semibold">Address:</p>
+                  <p className="font-semibold">Address Details:</p>
                   {isEditMode ? (
                     <input
                       type="text"
-                      name="address"
-                      value={userInfo?.address}
+                      name="address_details"
+                      value={userInfo?.address_details}
                       onChange={inputChangeHandler}
                       className="border p-2 rounded ml-2 dark:bg-secondary-dark-bg dark:text-gray-200"
                     />
                   ) : (
-                    <p className="ml-2">{userInfo?.address}</p>
+                    <p className="ml-2">{userInfo?.address_details}</p>
                   )}
                 </div>
+                <InputLabel htmlFor="city_id">City</InputLabel>
+                <Select
+                  label="City"
+                  value={userInfo?.city_id}
+                  onChange={inputChangeHandler}
+                  name="city_id"
+                  fullWidth
+                  mb={4}
+                >
+                  <MenuItem value="">Select City</MenuItem>
+                  {cities?.data?.map((city) => (
+                    <MenuItem key={city.city_id} value={city.city_id}>
+                      {city.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <InputLabel htmlFor="state_id">State</InputLabel>
+                <Select
+                  label="State"
+                  value={userInfo?.state_id}
+                  onChange={inputChangeHandler}
+                  name="state_id"
+                  fullWidth
+                  mb={4}
+                  disabled={!userInfo.city_id} // Disable the state dropdown until city is selected
+                >
+                  <MenuItem value="">Select State</MenuItem>
+                  {cityStateData?.data?.map((state) => (
+                    <MenuItem key={state.state_id} value={state.state_id}>
+                      {state.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <InputLabel htmlFor="street_id">Street</InputLabel>
+                <Select
+                  label="Street"
+                  value={userInfo?.street_id}
+                  onChange={inputChangeHandler}
+                  name="street_id"
+                  fullWidth
+                  mb={4}
+                  disabled={!userInfo.state_id} // Disable the street dropdown until state is selected
+                >
+                  <MenuItem value="">Select Street</MenuItem>
+                  {stateStreetData?.data?.map((street) => (
+                    <MenuItem key={street.street_id} value={street.street_id}>
+                      {street.name}
+                    </MenuItem>
+                  ))}
+                </Select>
               </>
             )}
           </div>

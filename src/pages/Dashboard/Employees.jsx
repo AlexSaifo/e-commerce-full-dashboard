@@ -11,7 +11,7 @@ import {
   Selection,
   Filter,
   Sort,
-  ExcelExport
+  ExcelExport,
 } from "@syncfusion/ej2-react-grids";
 import { employeesGrid } from "../../data/dummy";
 import { Header } from "../../components/Dashboard";
@@ -46,8 +46,8 @@ const Employees = () => {
     refetch,
   } = useFetchEmployeesQuery();
 
-  const {isAdd} = useSelector(state => state.employees);
-  const employeesData = useSelector(state => selectAllEmployees(state));
+  const { isAdd } = useSelector((state) => state.employees);
+  const employeesData = useSelector((state) => selectAllEmployees(state));
 
   useEffect(() => {
     if (isSuccess) {
@@ -55,11 +55,11 @@ const Employees = () => {
     }
   }, [isSuccess]);
 
-  useEffect(()=>{
-      if(isAdd){
-        refetch();
-      }
-  } , [isAdd])
+  useEffect(() => {
+    if (isAdd) {
+      refetch();
+    }
+  }, [isAdd]);
 
   console.log(dataEmployees?.data);
 
@@ -69,7 +69,7 @@ const Employees = () => {
   const alertType = useSelector(selectAlertType);
   const alertButtonText = useSelector(selectAlertButtonText);
 
-  const toolbarOptions = ["Search", "Delete", "PdfExport" , "ExcelExport"];
+  const toolbarOptions = ["Search", "Delete", "PdfExport", "ExcelExport"];
   const editing = { allowDeleting: true };
   const gridRef = useRef(null);
   const [isDelete, setIsDelete] = useState(false);
@@ -78,10 +78,9 @@ const Employees = () => {
     console.log(args, gridRef);
     if (gridRef.current && args.item.id.includes("pdfexport")) {
       gridRef.current.pdfExport();
-    }else if (gridRef.current && args.item.id.includes("excel")) {
+    } else if (gridRef.current && args.item.id.includes("excel")) {
       gridRef.current.excelExport();
-    } 
-     else if (
+    } else if (
       gridRef.current.getSelectedRecords()[0] &&
       args.item.id.includes("delete")
     ) {
@@ -105,7 +104,14 @@ const Employees = () => {
   };
 
   if (isLoading) {
-    return <DataSpinner showSpinner={true} />;
+    return (
+      <>
+        <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl dark:bg-secondary-dark-bg">
+          <Header category="Inner Pages" title="Deliveries" />
+          <DataSpinner showSpinner={true} />
+        </div>
+      </>
+    );
   }
   if (error) {
     return (
@@ -143,7 +149,7 @@ const Employees = () => {
         allowPdfExport={true}
         allowExcelExport={true}
         toolbarClick={toolbarClick}
-      > 
+      >
         <ColumnsDirective>
           {/* eslint-disable-next-line react/jsx-props-no-spreading */}
           {employeesGrid.map((item, index) => (
@@ -151,7 +157,16 @@ const Employees = () => {
           ))}
         </ColumnsDirective>
         <Inject
-          services={[Search, Page, Toolbar, PdfExport,ExcelExport, Selection, Filter, Sort]}
+          services={[
+            Search,
+            Page,
+            Toolbar,
+            PdfExport,
+            ExcelExport,
+            Selection,
+            Filter,
+            Sort,
+          ]}
         />
       </GridComponent>
     </div>

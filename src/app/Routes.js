@@ -39,7 +39,6 @@ import {
   Report,
   AddNewStore,
 } from "../components/Dashboard";
-import { orderLoader } from "../pages/Dashboard/Orders";
 import { employeeLoader } from "../pages/Dashboard/Employees";
 import { customersLoader } from "../pages/Dashboard/Customers";
 import { storesLoader } from "../components/Dashboard/MultiStores";
@@ -52,10 +51,15 @@ import ForgetPassword from "../pages/LandingPage/auth/ForgetPassword";
 import NewPassword from "../pages/LandingPage/auth/NewPassword";
 import Store from "../components/Dashboard/Store";
 import Categories from "../pages/Dashboard/Categories";
+import Items from "../pages/Dashboard/Items";
+import StoreItems from "../components/Dashboard/StoreItems";
+import StoreItem from "../components/Dashboard/StoreItem";
+import AddNewItem from "../components/Dashboard/AddNewItem";
+import Deliveries from "../pages/Dashboard/Deliveries";
+import Transactions from "../pages/Dashboard/Transactions";
 
 const Routes = () => {
-  const {user , resetPassword} = useSelector((state) => state.auth);
-
+  const { user, resetPassword } = useSelector((state) => state.auth);
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -74,11 +78,8 @@ const Routes = () => {
             <Route path="profile" element={<Profile />} />
 
             {/* pages  */}
-            <Route path="orders" element={<Orders />} loader={orderLoader} />
-            <Route
-              path="employees"
-              element={<Employees />}
-            />
+            <Route path="orders" element={<Orders />}  />
+            <Route path="employees" element={<Employees />} />
             <Route
               path="customers"
               element={<Customers />}
@@ -90,7 +91,6 @@ const Routes = () => {
               <Route path="add" element={<AddNewStore />} />
               <Route path=":storeId/show" element={<Store />} />
             </Route>
-            
 
             <Route path="contact-us" element={<ContactUs />}>
               <Route
@@ -106,20 +106,18 @@ const Routes = () => {
               <Route path=":id" element={<Report />} />
             </Route>
 
+            <Route path="transactions" element={<Transactions/>}/>
+
             {/* apps  */}
             <Route path="calendar" element={<Calendar />} />
             <Route path="categories" element={<Categories />} />
-            {/* charts  */}
 
-
-            <Route path="line" element={<Line />} />
-            <Route path="area" element={<Area />} />
-            <Route path="bar" element={<Bar />} />
-            <Route path="pie" element={<Pie />} />
-            <Route path="financial" element={<Financial />} />
-            <Route path="color-mapping" element={<ColorMapping />} />
-            <Route path="pyramid" element={<Pyramid />} />
-            <Route path="stacked" element={<Stacked />} />
+            <Route path="items" element={<Items />}>
+              <Route index element={<StoreItems />} />
+              <Route path=":itemId/show" element={<StoreItem />} />
+              <Route path="add" element={<AddNewItem />} />
+            </Route>
+            <Route path="delivery" element={<Deliveries />} />
 
             {/* page not found section */}
             <Route path="not-found" element={<NotFound />} />

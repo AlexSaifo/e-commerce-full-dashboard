@@ -1,94 +1,44 @@
-import {
-  createAsyncThunk,
-  createEntityAdapter,
-  createSelector,
-  createSlice,
-} from "@reduxjs/toolkit";
-import { ordersData } from "../data/dummy";
+import { createSlice } from "@reduxjs/toolkit";
 
-const ordersAdapter = createEntityAdapter({
-  selectId: (order) => order.OrderID,
-});
-
-const initialState = ordersAdapter.getInitialState({
-  status: "idle",
-  error: null,
-});
-
-export const fetchOrders = createAsyncThunk("orders/fetchOrders", async () => {
-  //const response = await fetch("");
-  //const orders = await response.json();
-  return ordersData;
-});
-
-export const addNewOrder = createAsyncThunk(
-  "orders/addNewOrder",
-  async (newOrder) => {
-    const response = await fetch("", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newOrder),
-    });
-    const order = await response.json();
-    return order;
-  }
-);
-
-export const removeOrder = createAsyncThunk(
-  "orders/removeOrder",
-  async (orderId) => {
-    const response = await fetch(`/${orderId}`, {
-      method: "DELETE",
-    });
-    const order = await response.json();
-    return order;
-  }
-);
+const initialState = {
+  orders: [],
+  isAdd: false,
+  isDelete: false,
+};
 
 const ordersSlice = createSlice({
   name: "orders",
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchOrders.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(fetchOrders.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        ordersAdapter.setAll(state, action.payload);
-      })
-      .addCase(fetchOrders.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
-      })
-      .addCase(addNewOrder.fulfilled, (state, action) => {
-        ordersAdapter.addOne(state, action.payload);
-      })
-      .addCase(removeOrder.fulfilled, (state, action) => {
-        ordersAdapter.removeOne(state, action.payload.OrderID);
-      });
+  reducers: {
+    addOrders: (state, action) => {
+      state.isAdd = false;
+      state.orders = [...action.payload];
+    },
+    addOrder: (state, action) => {
+      state.isAdd = true;
+      // const employee = action.payload;
+      // const existingEmployee = state.employees.find(
+      //   (emp) => emporder.order_id === employeeorder.order_id
+      // );
+      // if (!existingEmployee) {
+      //   state.employees.push(employee);
+      // }
+    },
+    removeOrder: (state, action) => {
+      const orderID = action.payload;
+      state.orders = state.orders.filter(
+        (order) => order.order_id !== orderID
+      );
+    },
   },
 });
 
+export const { addOrders, addOrder, removeOrder } =
+  ordersSlice.actions;
 
-export const {
-  selectAll: selectAllOrders,
-  selectById: selectOrderById,
-  selectIds: selectOrderIds,
-} = ordersAdapter.getSelectors((state) => state.orders);
+export const selectAllOrders = (state) => state.orders.orders;
+export const selectOrderById = (state, orderID) =>
+  state.orders.orders.find((order) => order.order_id === orderID);
 
-export const selectOrdersStatus = createSelector(
-  (state) => state.orders.status,
-  (status) => status
-);
-
-export const selectOrdersError = createSelector(
-  (state) => state.orders.error,
-  (error) => error
-);
-
-export const ordersReducer = ordersSlice.reducer;
+export const ordersReducers = ordersSlice.reducer;
 export default ordersSlice;
